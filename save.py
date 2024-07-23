@@ -1,16 +1,19 @@
 import pickle
+from data import *
+
 
 def read_save():
     with open('save.pickle', 'rb') as f:
         try:
-            data = pickle.load(f)
-            suggestion = pickle.load(f)
+            D.data = pickle.load(f)
+            D.suggestion = pickle.load(f)
         except (EOFError, pickle.UnpicklingError):
-            data = {"матан": "", "линал": "", "forFun": ""}
-            suggestion = []
-    return data, suggestion
+            D.data = {}
+            for i in D.subjects:
+                D.data.pop(i , "")
+            D.suggestion = []
 
-def edit_save(data, suggestion):
+def edit_save():
     with open('save.pickle', 'wb') as f:
-        pickle.dump(data, f)
-        pickle.dump(suggestion, f)
+        pickle.dump(D.data, f)
+        pickle.dump(D.suggestion, f)
