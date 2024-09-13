@@ -3,6 +3,7 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart
 from aiogram.types import Message
+from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
@@ -35,7 +36,7 @@ keyboard_clear = inline_kb.as_markup()
 
 inline_kb_select = InlineKeyboardBuilder()
 for i in D.subjects:
-    inline_kb_select.button(text=i, callback_data='select_'+i)
+    inline_kb_select.row(InlineKeyboardButton(text=i, callback_data='select_' + i))
 keybord_select = inline_kb_select.as_markup()
 
 
@@ -44,8 +45,14 @@ async def print_arr(message: Message):
     read_save()
     ss = ""
     for key, value in D.data.items():
-        ss += str(key) + ": " + str(value) + "\n"
+        ss += str(key) + ": " + str(value) + "\n\n" 
     await bot.send_message(chat_id=message.chat.id, text=ss)
+
+
+@dp.message(lambda message: message.text and message.text.lower() == '/clear_data')
+async def clear_data(message: Message):
+    clear()
+    await bot.send_message(chat_id=message.chat.id, text="clear")
 
 
 async def print_suggestion(message: Message):
@@ -83,7 +90,7 @@ async def clear_suggestion(call: CallbackQuery):
 async def select_button(call: CallbackQuery, state: FSMContext):
     await state.update_data(subject=call.data.split("_")[-1]) 
     await state.set_state(Form.new_data)
-    await call.message.answer("Введите текст:")
+    await call.message.answer("Введите данные в формате: дд дз")
     await call.answer()
 
 

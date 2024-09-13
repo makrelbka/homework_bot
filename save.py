@@ -4,16 +4,18 @@ from data import *
 
 def read_save():
     with open('save.pickle', 'rb') as f:
-        try:
-            D.data = pickle.load(f)
-            D.suggestion = pickle.load(f)
-        except (EOFError, pickle.UnpicklingError):
-            D.data = {}
+        D.data = pickle.load(f)
+        D.suggestion = pickle.load(f)
+        if (D.data == {}):
             for i in D.subjects:
-                D.data.pop(i , "")
+                D.data[i] = ""
             D.suggestion = []
 
 def edit_save():
     with open('save.pickle', 'wb') as f:
         pickle.dump(D.data, f)
         pickle.dump(D.suggestion, f)
+
+def clear():
+    D.data = {}
+    edit_save()

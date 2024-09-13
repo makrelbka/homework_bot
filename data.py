@@ -3,4 +3,12 @@ class D:
     TOKEN = "6167485884:AAFchWRaQomUHPcZMQyclK_9KzXhEgAAW1Y"
     data = {}
     suggestion = []
-    subjects = ["матан", "линал", "forFun"]
+    subjects = [
+                "диффуры ",
+                "история",
+                "матлог ",
+                "матан ",
+                "aнгл ",
+                "алго ",
+                "go ",
+                "дм ",]
