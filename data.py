@@ -12,3 +12,5 @@ class D:
                 "алго ",
                 "go ",
                 "дм ",]
+    links = "http://google.com",
+    

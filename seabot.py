@@ -21,12 +21,14 @@ class Form(StatesGroup):
 
 inline_kb = InlineKeyboardBuilder()
 inline_kb.button(text='Предложить изменения', callback_data='but_suggestchanges')
-inline_kb.button(text='Получить', callback_data='but_print')
+inline_kb.button(text='ДЗ', callback_data='but_print')
+inline_kb.button(text='Ссылки', callback_data='but_links')
 keyboard_user = inline_kb.as_markup()
 
 inline_kb = InlineKeyboardBuilder()
 inline_kb.button(text='Измененить', callback_data='but_redact')
-inline_kb.button(text='Получить', callback_data='but_print')
+inline_kb.button(text='ДЗ', callback_data='but_print')
+inline_kb.button(text='Ссылки', callback_data='but_links')
 inline_kb.button(text='Предложка', callback_data='but_peek')
 keyboard_admin = inline_kb.as_markup()
 
@@ -65,6 +67,11 @@ async def print_suggestion(message: Message):
     else:
         await message.answer(ss, reply_markup=keyboard_clear)
 
+async def print_links(message: Message):
+    await message.answer(str(D.links))
+    
+
+
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     if (message.from_user.id != D.adminId):
@@ -83,6 +90,7 @@ async def clear_suggestion(call: CallbackQuery):
     D.suggestion = []
     edit_save()
     await call.message.answer("cleared")
+    await call.message.delete()
     await call.answer()
 
 
@@ -90,7 +98,10 @@ async def clear_suggestion(call: CallbackQuery):
 async def select_button(call: CallbackQuery, state: FSMContext):
     await state.update_data(subject=call.data.split("_")[-1]) 
     await state.set_state(Form.new_data)
-    await call.message.answer("Введите данные в формате: дд дз")
+    await call.message.delete()
+    temp_data = await state.get_data()
+    subject = temp_data['subject']
+    await call.message.answer(str(subject) + ": продолжи в формате дд дз")
     await call.answer()
 
 
@@ -99,14 +110,15 @@ async def new_text_handler(message: Message, state: FSMContext):
     temp_data = await state.get_data()
     subject = temp_data['subject']
     new_text = message.text
-    if (message.from_user.id == D.adminId):
-        D.data[subject] = new_text
-        edit_save()
-        await print_arr(message)
-    else:
-        D.suggestion.append(str(message.from_user.full_name) + " " + str(subject) + ": " + new_text)
-        edit_save()
-        await bot.send_message(chat_id=message.chat.id, text="Ваше предложение занисано\nОно будет добавлено после проверки")
+    if (new_text != ""):
+        if (message.from_user.id == D.adminId):
+            D.data[subject] = new_text
+            edit_save()
+            await print_arr(message)
+        else:
+            D.suggestion.append(str(message.from_user.full_name) + " " + str(subject) + ": " + new_text)
+            edit_save()
+            await bot.send_message(chat_id=message.chat.id, text="Ваше предложение занисано\nОно будет добавлено после проверки")
     await state.clear()
 
 
@@ -120,6 +132,10 @@ async def process_callback(callback_query: types.CallbackQuery):
         await print_arr(callback_query.message)
     if com == "peek":
         await print_suggestion(callback_query.message)
+    if com == "links":
+        await print_links(callback_query.message)
+    
+    await callback_query.message.delete()
     await callback_query.answer()
 
 
