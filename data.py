@@ -1,16 +1,14 @@
 class D:
-    adminId = 1335525100
-    TOKEN = "6167485884:AAFchWRaQomUHPcZMQyclK_9KzXhEgAAW1Y"
+    adminId = 0# admins telegram id to edit data
+    TOKEN = 0# your bot token
     data = {}
     suggestion = []
     subjects = [
-                "диффуры ",
-                "история",
-                "матлог ",
-                "матан ",
-                "aнгл ",
-                "алго ",
-                "go ",
-                "дм ",]
+                "your ",
+                "currient",
+                "subjects ",
+                "or ",
+                "affairs "
+                ]
     links = "http://google.com",
     
